@@ -1,5 +1,6 @@
 APP=$(shell basename $(shell git remote get-url origin) .git)
-REGISTRY=sergiobelya
+GCLOUD_PROJECT_ID=strange-theme-417619
+REGISTRY=eu.gcr.io/${GCLOUD_PROJECT_ID}
 VERSION=$(shell git describe --tags --abbrev=0)-$(shell git rev-parse --short HEAD)
 TARGETOS=
 TARGETARCH=
@@ -41,7 +42,7 @@ lint:
 test:
 	go test -v
 
-# build kbot app
+# Build kbot app
 build: format get show-vars
 	CGO_ENABLED=0 GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build -o kbot -ldflags "-X="github.com/sergiobelya/kbot/cmd.appVersion=${VERSION}
 
@@ -58,7 +59,11 @@ windows:
 	${MAKE} TARGET=windows build
 # -----
 
-# build docker image with kbot app
+# Build docker image with kbot app
+# make TARGET=linux image
+# make TARGET=arm image
+# make TARGET=macos image
+# make TARGET=windows image
 image: show-vars
 	@echo TAG: ${REGISTRY}/${APP}:${VERSION}-${TARGETOS}_${TARGETARCH}
 	docker build . -t ${REGISTRY}/${APP}:${VERSION}-${TARGETOS}_${TARGETARCH} \
@@ -78,6 +83,16 @@ image-windows:
 	${MAKE} TARGET=windows image
 # -----
 
+# Auth on Google Cloud before push
+auth:
+	gcloud auth login
+	gcloud config set project ${GCLOUD_PROJECT_ID}
+	gcloud auth configure-docker eu.gcr.io
+
+# make TARGET=linux push
+# make TARGET=arm push
+# make TARGET=macos push
+# make TARGET=windows push
 push: show-vars
 	docker push ${REGISTRY}/${APP}:${VERSION}-${TARGETOS}_${TARGETARCH}
 
