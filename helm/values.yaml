@@ -8,6 +8,8 @@ image:
   repository: sergiobelya
   # Overrides the image tag whose default is the chart appVersion.
   tag: "v1.0.4-ba474a0"
+  os: linux
+  arch: amd64
 
 secret:
   name: "kbot"
