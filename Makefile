@@ -1,6 +1,7 @@
 APP=$(shell basename $(shell git remote get-url origin) .git)
 GCLOUD_PROJECT_ID=strange-theme-417619
-REGISTRY=eu.gcr.io/${GCLOUD_PROJECT_ID}
+# REGISTRY=eu.gcr.io/${GCLOUD_PROJECT_ID}
+REGISTRY=sergiobelya
 VERSION=$(shell git describe --tags --abbrev=0)-$(shell git rev-parse --short HEAD)
 TARGETOS=
 TARGETARCH=
