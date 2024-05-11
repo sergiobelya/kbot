@@ -5,7 +5,7 @@
 replicaCount: 1
 
 image:
-  repository: sergiobelya
+  repository: eu.gcr.io/strange-theme-417619
   # Overrides the image tag whose default is the chart appVersion.
   tag: "v1.0.4-ba474a0"
   os: linux
