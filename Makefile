@@ -43,20 +43,12 @@ test:
 	go test -v
 
 # Build kbot app
+# make TARGET=linux build
+# make TARGET=arm build
+# make TARGET=macos build
+# make TARGET=windows build
 build: format get show-vars
 	CGO_ENABLED=0 GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build -o kbot -ldflags "-X="github.com/sergiobelya/kbot/cmd.appVersion=${VERSION}
-
-linux:
-	${MAKE} TARGET=linux build
-
-arm:
-	${MAKE} TARGET=arm build
-
-macos:
-	${MAKE} TARGET=macos build
-
-windows:
-	${MAKE} TARGET=windows build
 # -----
 
 # Build docker image with kbot app
@@ -69,18 +61,6 @@ image: show-vars
 	docker build . -t ${REGISTRY}/${APP}:${VERSION}-${TARGETOS}_${TARGETARCH} \
 		--build-arg="TARGETOS=${TARGETOS}" \
 		--build-arg="TARGETARCH=${TARGETARCH}"
-
-image-linux:
-	${MAKE} TARGET=linux image
-
-image-arm:
-	${MAKE} TARGET=arm image
-
-image-macos:
-	${MAKE} TARGET=macos image
-
-image-windows:
-	${MAKE} TARGET=windows image
 # -----
 
 # Auth on Google Cloud before push
