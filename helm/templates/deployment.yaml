@@ -36,7 +36,7 @@ spec:
           type: ""
         name: dev-mem
       containers:
-        - name: {{ .Chart.Name }}
+        - name: {{ .Release.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           volumeMounts:
