@@ -4,7 +4,8 @@
 
 replicaCount: 1
 image:
-  repository: sergiobelya
+  registry: ghcr.io
+  repository: sergiobelya/kbot
   # Overrides the image tag whose default is the chart appVersion.
   tag: "v1.0.5-818e8e0"
   os: linux
