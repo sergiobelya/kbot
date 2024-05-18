@@ -6,7 +6,7 @@ replicaCount: 1
 image:
   repository: sergiobelya
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "v1.0.5-7824a04"
+  tag: "v1.0.5-818e8e0"
   os: linux
   arch: amd64
 secret:
