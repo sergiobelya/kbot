@@ -1,7 +1,8 @@
 APP=$(shell basename $(shell git remote get-url origin) .git)
 GCLOUD_PROJECT_ID=strange-theme-417619
 # REGISTRY=eu.gcr.io/${GCLOUD_PROJECT_ID}
-REGISTRY=sergiobelya
+# REGISTRY=sergiobelya
+REGISTRY=ghcr.io/sergiobelya
 VERSION=$(shell git describe --tags --abbrev=0)-$(shell git rev-parse --short HEAD)
 TARGETOS=
 TARGETARCH=
@@ -23,6 +24,7 @@ ifeq (${TARGET},windows)
 	TARGETOS=windows
 	TARGETARCH=amd64
 endif
+TAG=${REGISTRY}/${APP}:${VERSION}-${TARGETOS}-${TARGETARCH}
 
 show-vars:
 	@echo APP: ${APP}
@@ -30,6 +32,7 @@ show-vars:
 	@echo TARGET: ${TARGET}
 	@echo TARGETOS: ${TARGETOS}
 	@echo TARGETARCH: ${TARGETARCH}
+	@echo TAG: ${TAG}
 
 get:
 	go get
@@ -58,24 +61,26 @@ build: format get show-vars
 # make TARGET=macos image
 # make TARGET=windows image
 image: show-vars
-	@echo TAG: ${REGISTRY}/${APP}:${VERSION}-${TARGETOS}_${TARGETARCH}
-	docker build . -t ${REGISTRY}/${APP}:${VERSION}-${TARGETOS}_${TARGETARCH} \
+	@echo TAG: ${TAG}
+	docker build . -t ${TAG} \
 		--build-arg="TARGETOS=${TARGETOS}" \
 		--build-arg="TARGETARCH=${TARGETARCH}"
 # -----
 
-# Auth on Google Cloud before push
+# Auth before push
 auth:
-	gcloud auth login
-	gcloud config set project ${GCLOUD_PROJECT_ID}
-	gcloud auth configure-docker eu.gcr.io
+# run export CR_PAT before
+	echo ${CR_PAT} | docker login ghcr.io -u sergiobelya --password-stdin
+# gcloud auth login
+# gcloud config set project ${GCLOUD_PROJECT_ID}
+# gcloud auth configure-docker eu.gcr.io
 
 # make TARGET=linux push
 # make TARGET=arm push
 # make TARGET=macos push
 # make TARGET=windows push
 push: show-vars
-	docker push ${REGISTRY}/${APP}:${VERSION}-${TARGETOS}_${TARGETARCH}
+	docker push ${TAG}
 
 clean:
 	rm -rf kbot
