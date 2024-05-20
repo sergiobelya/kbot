@@ -12,16 +12,28 @@ pipeline {
     }
 
     stages {
-        stage('Example') {
+        stage('Show params') {
             steps {
-                echo "Build for platform ${params.OS}"
-                echo "Build for arch: ${params.ARCH}"
+                echo "Platform: ${params.OS}"
+                echo "Arch: ${params.ARCH}"
             }
         }
         stage('clone') {
             steps {
                 echo 'Clone Repository'
                 git branch: "${BRANCH}", url: "${REPO}"
+            }
+        }
+        stage('test') {
+            steps {
+                echo 'Run tests'
+                sh "make test"
+            }
+        }
+        stage('build') {
+            steps {
+                echo "Build application for platform: ${params.OS}, architecture: ${params.ARCH}"
+                sh "make TARGETOS=${params.OS} TARGETARCH=${params.ARCH} build"
             }
         }
     }
